@@ -6,7 +6,7 @@ This project tracks mentions of \*\*HR Software\*\* on Twitter, analyzes the sen
 
 
 
-> 🚨 Try it live: \[Telegram Alert Channel](https://t.me/sentiment\_alert\_demo)
+🎯 Try it live: \[Telegram Alert Channel](https://t.me/sentiment\_alert\_demo)
 
 
 
@@ -36,71 +36,21 @@ This project tracks mentions of \*\*HR Software\*\* on Twitter, analyzes the sen
 
 
 
-| Tool / Service | Purpose |
+| Tool / Service        | Purpose                            |
 
-|----------------|---------|
+|-----------------------|------------------------------------|
 
-| \*\*n8n\*\*        | Workflow automation |
+| \*\*n8n\*\*               | Workflow automation                |
 
-| \*\*Twitter API\*\*| Fetching tweets by keyword |
+| \*\*Twitter API\*\*       | Fetch keyword-matching tweets      |
 
-| \*\*Hugging Face\*\*| Sentiment classification |
+| \*\*Hugging Face API\*\*  | Run sentiment analysis on tweets   |
 
-| \*\*Telegram Bot\*\*| Alert delivery |
-
-| \*\*Docker\*\*     | Self-hosted n8n instance |
+| \*\*Telegram Bot\*\*      | Send alerts to public Telegram channel |
 
 
 
 ---
-
-
-
-\## 📌 Telegram Notification Example
-
-
-
-!\[telegram-demo](https://user-images.githubusercontent.com/your-id/demo-image-placeholder.png)  
-
-> "🚨 Alert: HR systems are broken and frustrating to use"
-
-
-
----
-
-
-
-\## 📂 Workflow Overview
-
-
-
-```plaintext
-
-\[Trigger / Timer Node]
-
-&nbsp;       ↓
-
-\[HTTP Request: Twitter API]
-
-&nbsp;       ↓
-
-\[Function Node: Format Tweets]
-
-&nbsp;       ↓
-
-\[HTTP Request: Hugging Face Sentiment]
-
-&nbsp;       ↓
-
-\[Function Node: Map Sentiment Label]
-
-&nbsp;       ↓
-
-\[IF Node: Check for NEGATIVE]
-
-&nbsp;      ↙      ↘
-
-\[Send Alert 🟢]   \[Do Nothing 🔴]
 
 
 
