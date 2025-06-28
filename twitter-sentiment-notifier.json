@@ -1,0 +1,247 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ab081175-0d03-4d1b-b2da-0a93e0bf238d",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://api.twitter.com/2/tweets/search/recent?query=HR%20Software&max_results=10&tweet.fields=created_at,text,author_id",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer AAAAAAAAAAAAAAAAAAAAAAkt2wEAAAAAeQn4w4QOEc8wAMX2v76dckMVVUg%3DPuKzl3bKCNlqJybZQoXc8JhlH9rPQ3ljpW00lgkgjeRnuXz87x"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ],
+      "id": "4f87f2ce-58b8-45ba-bce1-770a9dc201c4",
+      "name": "Twitter API"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items[0].json.data.map(tweet => ({\n  json: {\n    text: tweet.text,\n    created_at: tweet.created_at,\n    author_id: tweet.author_id\n  }\n}));\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        0
+      ],
+      "id": "04a42572-304d-465e-986a-ed87b6b47033",
+      "name": "Tweet Extractor"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api-inference.huggingface.co/models/cardiffnlp/twitter-roberta-base-sentiment",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{HUGGING_FACE_API_KEY}}"
+
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "inputs",
+              "value": "={{$json[\"text\"]}}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        600,
+        140
+      ],
+      "id": "59a79a65-1dce-4762-bebd-20d71628ea51",
+      "name": "Hugging Face Sentiment API"
+    },
+    {
+      "parameters": {
+        "jsCode": "const labelMap = {\n  \"LABEL_0\": \"NEGATIVE\",\n  \"LABEL_1\": \"NEUTRAL\",\n  \"LABEL_2\": \"POSITIVE\"\n};\n\nreturn items.map(item => {\n  const predictions = item.json;\n  const top = predictions.sort((a, b) => b.score - a.score)[0];\n\n  return {\n    json: {\n      sentiment_label: labelMap[top.label],\n      sentiment_score: top.score,\n      text: item.json.inputs // Or item.json.text, depending on what you passed in earlier\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        780,
+        0
+      ],
+      "id": "907ee8ed-becc-4e06-9196-a4a920e2184c",
+      "name": "Sentiment Classifier"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8e11f3d1-054b-4fdb-8e6c-2a1735df6126",
+              "leftValue": "={{ $json.sentiment_label }}",
+              "rightValue": "NEGATIVE",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1000,
+        0
+      ],
+      "id": "bf2e8a4c-6711-43ba-ac20-de6d6d9cba74",
+      "name": "NEGATIVE Filter"
+    },
+    {
+      "parameters": {
+        "chatId": "@sentiment_alert_demo",
+        "text": "=🚨 Alert: {{$json[\"text\"]}}\n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1083.8922155688624,
+        -100
+      ],
+      "id": "cce30509-d163-49cd-bab9-6873dfd1ea42",
+      "name": "Send a text message",
+      "webhookId": "07b760e2-7558-4359-82d7-d69da325f18f",
+      "credentials": {
+        "telegramApi": {
+          "id": "S5BOq78VEY8uAJek",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Twitter API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Twitter API": {
+      "main": [
+        [
+          {
+            "node": "Tweet Extractor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tweet Extractor": {
+      "main": [
+        [
+          {
+            "node": "Hugging Face Sentiment API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Hugging Face Sentiment API": {
+      "main": [
+        [
+          {
+            "node": "Sentiment Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sentiment Classifier": {
+      "main": [
+        [
+          {
+            "node": "NEGATIVE Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NEGATIVE Filter": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "39fbaa1f-3206-4789-a16a-f1c89fa66854",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "04333d2810de096a68b0ccbb6a6f103f22cc7373c91b09ec4b29294579e81087"
+  },
+  "id": "n4x3tte1QYHarIG8",
+  "tags": []
+}
