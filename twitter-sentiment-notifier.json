@@ -14,7 +14,7 @@
     },
     {
       "parameters": {
-        "url": "https://api.twitter.com/2/tweets/search/recent?query=HR%20Software&max_results=10&tweet.fields=created_at,text,author_id",
+        "url": "https://api.twitter.com/2/tweets/search/recent?query=%22hiring%22%20OR%20%22we%20are%20hiring%22%20OR%20%22software%20engineer%22%20OR%20%22freelance%20developer%22%20OR%20%22remote%20job%22%20OR%20%22join%20our%20team%22&max_results=10&tweet.fields=created_at,text,author_id",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -63,8 +63,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer {{HUGGING_FACE_API_KEY}}"
-
+              "value": ""
             }
           ]
         },
@@ -88,7 +87,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        600,
+        820,
         140
       ],
       "id": "59a79a65-1dce-4762-bebd-20d71628ea51",
@@ -101,7 +100,7 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        780,
+        1000,
         0
       ],
       "id": "907ee8ed-becc-4e06-9196-a4a920e2184c",
@@ -109,49 +108,15 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "8e11f3d1-054b-4fdb-8e6c-2a1735df6126",
-              "leftValue": "={{ $json.sentiment_label }}",
-              "rightValue": "NEGATIVE",
-              "operator": {
-                "type": "string",
-                "operation": "equals",
-                "name": "filter.operator.equals"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        1000,
-        0
-      ],
-      "id": "bf2e8a4c-6711-43ba-ac20-de6d6d9cba74",
-      "name": "NEGATIVE Filter"
-    },
-    {
-      "parameters": {
         "chatId": "@sentiment_alert_demo",
-        "text": "=🚨 Alert: {{$json[\"text\"]}}\n",
+        "text": "=📝 New Tweet Analyzed  Text: {{$json[\"text\"]}}  \nAuthor ID: {{$json[\"author_id\"]}} \nCreated At: {{$json[\"created_at\"]}} \nSentiment: {{$json[\"sentiment_label\"]}} \n({{$json[\"sentiment_score\"]}}) \n",
         "additionalFields": {}
       },
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        1083.8922155688624,
-        -100
+        1420,
+        -280
       ],
       "id": "cce30509-d163-49cd-bab9-6873dfd1ea42",
       "name": "Send a text message",
@@ -162,6 +127,19 @@
           "name": "Telegram account"
         }
       }
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map((item, index) => {\n  return {\n    json: {\n      text: $item(index).$node[\"Tweet Extractor\"].json[\"text\"],\n      created_at: $item(index).$node[\"Tweet Extractor\"].json[\"created_at\"],\n      author_id: $item(index).$node[\"Tweet Extractor\"].json[\"author_id\"],\n      sentiment_label: item.json[\"sentiment_label\"],\n      sentiment_score: item.json[\"sentiment_score\"]\n    }\n  };\n});\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        -320
+      ],
+      "id": "e6337642-71ec-435b-89c7-453893c7d1ee",
+      "name": "Code"
     }
   ],
   "pinData": {},
@@ -195,6 +173,11 @@
             "node": "Hugging Face Sentiment API",
             "type": "main",
             "index": 0
+          },
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
           }
         ]
       ]
@@ -214,14 +197,14 @@
       "main": [
         [
           {
-            "node": "NEGATIVE Filter",
+            "node": "Code",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "NEGATIVE Filter": {
+    "Code": {
       "main": [
         [
           {
@@ -237,7 +220,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "39fbaa1f-3206-4789-a16a-f1c89fa66854",
+  "versionId": "38dd8e9c-d265-4383-8fed-6c4c4a7786c0",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "04333d2810de096a68b0ccbb6a6f103f22cc7373c91b09ec4b29294579e81087"
