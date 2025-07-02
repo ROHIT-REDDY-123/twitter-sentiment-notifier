@@ -1,31 +1,33 @@
-# 📢 Twitter Sentiment Notifier
+# 🐦 Twitter Sentiment Analysis & Telegram Alerts
 
-This project tracks mentions of **Data Science** on Twitter, analyzes the sentiment of tweets using Hugging Face NLP models, and sends alerts for **negative sentiment** directly to a Telegram channel.
+This project automatically analyzes the sentiment of recent tweets about any keyword you choose and sends the results to a Telegram channel.
 
-🎯 Try it live: [Telegram Alert Channel](https://t.me/sentiment_alert_demo)
-
----
-
-## 🧠 Features
-
-- ✅ Fetches recent tweets using the Twitter API (filtered by keyword: **Data Science**)
-- ✅ Analyzes sentiment using Hugging Face (`twitter-roberta-base-sentiment`)
-- ✅ Flags negative tweets and sends them as Telegram alerts
-- ✅ Built using the powerful [n8n.io](https://n8n.io) workflow automation tool
+👉 **Live Demo Channel:** [Sentiment Alerts](https://t.me/sentiment_alert_demo)
 
 ---
 
-## ⚙️ Tools & APIs Used
+## 📖 Overview
 
-| Tool / Service        | Purpose                            |
-|-----------------------|------------------------------------|
-| **n8n**               | Workflow automation                |
-| **Twitter API**       | Fetch keyword-matching tweets      |
-| **Hugging Face API**  | Run sentiment analysis on tweets   |
-| **Telegram Bot**      | Send alerts to public Telegram channel |
+This workflow:
+1. **Fetches tweets** using the Twitter API.
+2. **Classifies sentiment** (Positive, Neutral, Negative) using a Hugging Face NLP model.
+3. **Formats results** with tweet text, author ID, timestamp, and sentiment score.
+4. **Sends alerts** directly to Telegram.
+
+It can be triggered manually or via a webhook.
 
 ---
 
+## 🚀 Features
 
+- ✅ Search for any keyword on Twitter.
+- ✅ Analyze up to 10 recent tweets at once.
+- ✅ Detect sentiment automatically with an AI model.
+- ✅ Get instant notifications in a Telegram channel.
 
+---
+
+## ✨ Example Output
+
+When the workflow runs, it sends messages to Telegram like:
 
