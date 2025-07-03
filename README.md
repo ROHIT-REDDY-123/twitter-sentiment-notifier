@@ -1,32 +1,53 @@
-# 🐦 Twitter Sentiment Analysis & Telegram Alerts
+# 📢 Tweet Sentiment Telegram Notifier
 
-This project automatically analyzes the sentiment of recent tweets about any keyword you choose and sends the results to a Telegram channel.
-
-👉 **Live Demo Channel:** [Sentiment Alerts](https://t.me/sentiment_alert_demo)
+This n8n workflow analyzes the sentiment of tweets related to **Data Science** using Hugging Face’s NLP model and sends structured sentiment results to a **Telegram channel**.
 
 ---
 
-## 📖 Overview
+## ⚙️ Workflow Overview
 
-This workflow:
-1. **Fetches tweets** using the Twitter API.
-2. **Classifies sentiment** (Positive, Neutral, Negative) using a Hugging Face NLP model.
-3. **Formats results** with tweet text, author ID, timestamp, and sentiment score.
-4. **Sends alerts** directly to Telegram.
-
+> Manual Trigger → Twitter API → Tweet Extractor → Hugging Face Sentiment API → Sentiment Classifier → Merge Data → Telegram
 
 ---
 
-## 🚀 Features
+## 🔧 How It Works
 
-- ✅ Search for any keyword on Twitter.
-- ✅ Analyze up to 10 recent tweets at once.
-- ✅ Detect sentiment automatically with an AI model.
-- ✅ Get instant notifications in a Telegram channel.
+1. **Manual Trigger**
+   - Starts the workflow when you click “Execute workflow”.
+
+2. **Twitter API**
+   - Fetches recent tweets containing the keyword `"Data Science"` using Twitter API v2.
+   - Returns tweet metadata including text, author ID, and timestamp.
+
+3. **Tweet Extractor**
+   - Extracts `text`, `created_at`, and `author_id` from each tweet using a code node.
+
+4. **Hugging Face Sentiment API**
+   - Sends tweet text to the model `cardiffnlp/twitter-roberta-base-sentiment`.
+   - Returns sentiment labels (LABEL_0, LABEL_1, LABEL_2) with confidence scores.
+
+5. **Sentiment Classifier**
+   - Maps model output labels:
+     - `LABEL_0 → NEGATIVE`
+     - `LABEL_1 → NEUTRAL`
+     - `LABEL_2 → POSITIVE`
+   - Picks the top label based on highest score.
+
+6. **Code (Data Merger)**
+   - Combines tweet metadata and sentiment result into one message object.
+
+7. **Send to Telegram**
+   - Sends each tweet's details and sentiment result as a message to a Telegram channel using the Telegram Bot API.
 
 ---
 
-## ✨ Example Output
+## 📦 Dependencies
 
-When the workflow runs, it sends messages to Telegram :
+- [n8n](https://n8n.io/) (self-hosted or desktop)
+- Twitter Developer Account with Bearer Token
+- Hugging Face API Token (free tier works)
+- Telegram Bot Token and Channel
+
+---
+
 
