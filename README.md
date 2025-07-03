@@ -29,5 +29,5 @@ It can be triggered manually or via a webhook.
 
 ## ✨ Example Output
 
-When the workflow runs, it sends messages to Telegram like:
+When the workflow runs, it sends messages to Telegram :
 
