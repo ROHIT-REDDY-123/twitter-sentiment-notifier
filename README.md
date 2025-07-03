@@ -38,6 +38,12 @@ This n8n workflow analyzes the sentiment of tweets related to **Data Science** u
 
 7. **Send to Telegram**
    - Sends each tweet's details and sentiment result as a message to a Telegram channel using the Telegram Bot API.
+  
+## 📲 Telegram Demo
+
+Join the channel to see live alerts:  
+👉 [Join](https://t.me/sentiment_alert_demo)
+
 
 ---
 
