@@ -14,7 +14,6 @@ This workflow:
 3. **Formats results** with tweet text, author ID, timestamp, and sentiment score.
 4. **Sends alerts** directly to Telegram.
 
-It can be triggered manually or via a webhook.
 
 ---
 
